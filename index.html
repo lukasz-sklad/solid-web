@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>SolidCraft</title>
+  <meta name="description" content="Open-source parametric CAD built in Rust. Desktop, browser, and MCP for AI agents.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SolidCraft">
+  <meta property="og:title" content="SolidCraft: try it in your browser">
+  <meta property="og:description" content="Open-source parametric CAD built in Rust. Desktop, browser, and MCP for AI agents.">
+  <meta property="og:url" content="https://solidcraft.ai/">
+  <meta property="og:image" content="https://docs.solidcraft.io/og.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta property="og:image:alt" content="SolidCraft: open-source parametric CAD built in Rust">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SolidCraft: try it in your browser">
+  <meta name="twitter:description" content="Open-source parametric CAD built in Rust. Desktop, browser, and MCP for AI agents.">
+  <meta name="twitter:image" content="https://docs.solidcraft.io/og.png">
+  <meta name="twitter:image:alt" content="SolidCraft: open-source parametric CAD built in Rust">
+  
+<script type="module">
+import init, * as bindings from './solidcraft-web-ae8371231def0c36.js';
+const wasm = await init({ module_or_path: './solidcraft-web-ae8371231def0c36_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script>
+  
+  
+  <link rel="stylesheet" href="./loading-fa23566dd89fa92b.css" integrity="sha384&#x2D;euwKh4irKhe2&#x2F;jloPXvLM24Jyb1hGwXpW8te2IFuClbPEShB7WM0y&#x2B;ZiFiHMDnKJ"/>
+  
+  <!-- Installable as an app (manifest.webmanifest); the icons are the Linux exports of the app mark. -->
+  <meta name="theme-color" content="#343840">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/32x32/ai.storyteller.solidcraft.png">
+  <link rel="apple-touch-icon" href="icons/256x256/ai.storyteller.solidcraft.png">
+  
+  
+  
+  
+<link rel="modulepreload" href="./solidcraft-web-ae8371231def0c36.js" crossorigin="anonymous" integrity="sha384-Tl9dsY26a2dPaxQEUlIYcuBu0eoko2Mf97jBJNbTGHx7iwLSYDT/dE3vvi2NA/Xw"><link rel="preload" href="./solidcraft-web-ae8371231def0c36_bg.wasm" crossorigin="anonymous" integrity="sha384-d32IfDTjwRhOJPpTc3i3mzwGmp938x23fJIxq1KviXTDNup0LT4AwtaYUtUlvmZ5" as="fetch" type="application/wasm"></head>
+<body>
+  <canvas id="solidcraft_canvas"></canvas>
+  <div id="solidcraft_loading" role="status"><img src="loading-logo.svg" alt=""><span class="sr-only">Ładowanie SolidCraft&hellip;</span></div>
+  <script>
+    function setSolidTheme(targetTheme) {
+      const isLight = targetTheme === "light";
+      try {
+        if (window.solidcraft && typeof window.solidcraft.request === "function") {
+          window.solidcraft.request("ui.prefs", { theme: isLight ? "light" : "dark" }).catch(() => {});
+        } else {
+          window.__pending_theme = targetTheme;
+        }
+      } catch (err) {
+        console.warn("[SolidCraft] Theme error:", err);
+      }
+    }
+
+    window.addEventListener("message", (event) => {
+      if (!event.data) return;
+      const theme = event.data.theme || (event.data.type === "set_theme" ? event.data.value : null);
+      if (theme === "light" || theme === "dark") {
+        setSolidTheme(theme);
+      }
+    });
+
+    if (new URLSearchParams(window.location.search).get("theme") === "light") {
+      try {
+        document.documentElement.style.colorScheme = "light";
+        document.body.style.background = "#f0f2f5";
+        const loading = document.getElementById("solidcraft_loading");
+        if (loading) {
+          loading.style.color = "#333";
+        }
+      } catch (_) {}
+    }
+
+    // Offline use and updates (sw.js; written into release builds by `cargo xtask web-offline`).
+    if ("serviceWorker" in navigator) {
+      addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+    }
+    // Install as an app: the browser's offer can come before the app runs, so it is kept here for
+    // the app's File ▸ Install app… item (src/install.rs). Installed, the browser makes no more offers.
+    addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); window.solidcraftInstall = e; });
+    addEventListener("appinstalled", () => { window.solidcraftInstall = null; });
+  </script>
+</body>
+</html>
