@@ -21,8 +21,8 @@
   <meta name="twitter:image:alt" content="SolidCraft: open-source parametric CAD built in Rust">
   
 <script type="module">
-import init, * as bindings from './solidcraft-web-3920485d926ae40e.js';
-const wasm = await init({ module_or_path: './solidcraft-web-3920485d926ae40e_bg.wasm' });
+import init, * as bindings from './solidcraft-web-f88beb8c8288bd4c.js';
+const wasm = await init({ module_or_path: './solidcraft-web-f88beb8c8288bd4c_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -44,7 +44,7 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
   
   
   
-<link rel="modulepreload" href="./solidcraft-web-3920485d926ae40e.js" crossorigin="anonymous" integrity="sha384-W7b+EemhD9xGaPo2i/UdRrS7OYMP4byGM5beGtjZL+7cHB03UA6K1xFf1GkF9g74"><link rel="preload" href="./solidcraft-web-3920485d926ae40e_bg.wasm" crossorigin="anonymous" integrity="sha384-P2vS8NLWpvmQ9xQQqtwj+pspYpuNSuJZb3UMZ9h8j7przb8wJ3Xna07RyKerzZ8E" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="./solidcraft-web-f88beb8c8288bd4c.js" crossorigin="anonymous" integrity="sha384-zrgYbbvjndbgj0LkgECW3uLxnKxplJpPgzoQVaDb3AAp71sSq4ehS+rR2Ty5HoKp"><link rel="preload" href="./solidcraft-web-f88beb8c8288bd4c_bg.wasm" crossorigin="anonymous" integrity="sha384-EgwZU+kS6Kn2jSimT5mVcF9OiFrXyzrfRpzAy8Ibz4TtixRqvf8Qarms/Kc3BUyy" as="fetch" type="application/wasm"></head>
 <body>
   <canvas id="solidcraft_canvas"></canvas>
   <div id="solidcraft_loading" role="status"><img src="loading-logo.svg" alt=""><span class="sr-only">Ładowanie SolidCraft&hellip;</span></div>
@@ -75,6 +75,21 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
           if (loading) {
             loading.style.background = isLight ? "#e8ebf0" : "#1a1b1e";
             loading.style.color = isLight ? "#4a5060" : "#a0aec0";
+          }
+        } catch (_) {}
+      }
+      if (event.data.type === "spin" || event.data.spin !== undefined || event.data.orbit === "continuous") {
+        const spin = event.data.spin !== undefined ? !!event.data.spin : true;
+        try {
+          if (window.solidcraft && typeof window.solidcraft.request === "function") {
+            window.solidcraft.request("ui.camera", { spin }).catch(() => {});
+          }
+        } catch (_) {}
+      }
+      if (event.data.type === "fit" || event.data.view === "fit") {
+        try {
+          if (window.solidcraft && typeof window.solidcraft.request === "function") {
+            window.solidcraft.request("ui.view", { view: "fit" }).catch(() => {});
           }
         } catch (_) {}
       }
