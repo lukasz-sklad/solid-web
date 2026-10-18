@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -21,8 +21,8 @@
   <meta name="twitter:image:alt" content="SolidCraft: open-source parametric CAD built in Rust">
   
 <script type="module">
-import init, * as bindings from './solidcraft-web-ae8371231def0c36.js';
-const wasm = await init({ module_or_path: './solidcraft-web-ae8371231def0c36_bg.wasm' });
+import init, * as bindings from './solidcraft-web-3920485d926ae40e.js';
+const wasm = await init({ module_or_path: './solidcraft-web-3920485d926ae40e_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -33,7 +33,7 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 </script>
   
   
-  <link rel="stylesheet" href="./loading-fa23566dd89fa92b.css" integrity="sha384&#x2D;euwKh4irKhe2&#x2F;jloPXvLM24Jyb1hGwXpW8te2IFuClbPEShB7WM0y&#x2B;ZiFiHMDnKJ"/>
+  <link rel="stylesheet" href="./loading-41a70d1c49cc399f.css" integrity="sha384&#x2D;gCdDRivtsGpogNRgBY3cXlmqQreYzPjbddWmxrPgFoTpapoAy2BPPJsqUw&#x2B;TDWeJ"/>
   
   <!-- Installable as an app (manifest.webmanifest); the icons are the Linux exports of the app mark. -->
   <meta name="theme-color" content="#343840">
@@ -44,7 +44,7 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
   
   
   
-<link rel="modulepreload" href="./solidcraft-web-ae8371231def0c36.js" crossorigin="anonymous" integrity="sha384-Tl9dsY26a2dPaxQEUlIYcuBu0eoko2Mf97jBJNbTGHx7iwLSYDT/dE3vvi2NA/Xw"><link rel="preload" href="./solidcraft-web-ae8371231def0c36_bg.wasm" crossorigin="anonymous" integrity="sha384-d32IfDTjwRhOJPpTc3i3mzwGmp938x23fJIxq1KviXTDNup0LT4AwtaYUtUlvmZ5" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="./solidcraft-web-3920485d926ae40e.js" crossorigin="anonymous" integrity="sha384-W7b+EemhD9xGaPo2i/UdRrS7OYMP4byGM5beGtjZL+7cHB03UA6K1xFf1GkF9g74"><link rel="preload" href="./solidcraft-web-3920485d926ae40e_bg.wasm" crossorigin="anonymous" integrity="sha384-P2vS8NLWpvmQ9xQQqtwj+pspYpuNSuJZb3UMZ9h8j7przb8wJ3Xna07RyKerzZ8E" as="fetch" type="application/wasm"></head>
 <body>
   <canvas id="solidcraft_canvas"></canvas>
   <div id="solidcraft_loading" role="status"><img src="loading-logo.svg" alt=""><span class="sr-only">Ładowanie SolidCraft&hellip;</span></div>
@@ -64,19 +64,40 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
     window.addEventListener("message", (event) => {
       if (!event.data) return;
-      const theme = event.data.theme || (event.data.type === "set_theme" ? event.data.value : null);
+      const theme = event.data.theme || (event.data.type === "set_theme" ? (event.data.theme || event.data.value) : null);
       if (theme === "light" || theme === "dark") {
         setSolidTheme(theme);
+        const isLight = theme === "light";
+        try {
+          document.documentElement.style.colorScheme = isLight ? "light" : "dark";
+          document.body.style.background = isLight ? "#e8ebf0" : "#1a1b1e";
+          const loading = document.getElementById("solidcraft_loading");
+          if (loading) {
+            loading.style.background = isLight ? "#e8ebf0" : "#1a1b1e";
+            loading.style.color = isLight ? "#4a5060" : "#a0aec0";
+          }
+        } catch (_) {}
       }
     });
 
     if (new URLSearchParams(window.location.search).get("theme") === "light") {
       try {
         document.documentElement.style.colorScheme = "light";
-        document.body.style.background = "#f0f2f5";
+        document.body.style.background = "#e8ebf0";
         const loading = document.getElementById("solidcraft_loading");
         if (loading) {
-          loading.style.color = "#333";
+          loading.style.background = "#e8ebf0";
+          loading.style.color = "#4a5060";
+        }
+      } catch (_) {}
+    } else {
+      try {
+        document.documentElement.style.colorScheme = "dark";
+        document.body.style.background = "#1a1b1e";
+        const loading = document.getElementById("solidcraft_loading");
+        if (loading) {
+          loading.style.background = "#1a1b1e";
+          loading.style.color = "#a0aec0";
         }
       } catch (_) {}
     }
